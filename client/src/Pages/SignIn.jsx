@@ -1,23 +1,33 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import { Link, useNavigate } from "react-router-dom";
 import { Label, TextInput, Button, Alert, Spinner } from "flowbite-react";
 import { useState } from "react";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 function SignUp() {
   const [formdata, setformdata] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  
+
+  const {loading,error:errorMessage}=useSelector(state=>state.user)
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const handleChange = (e) => {
     setformdata({ ...formdata, [e.target.id]: e.target.value.trim() });
   };
   const handleSubmit = async (e) => {
-    if ( !formdata.email || !formdata.password) {
-      return setErrorMessage("Please Fill out all fields");
+    if (!formdata.email || !formdata.password) {
+      return dispatch(signInFailure('please fill out all fields'));
     }
     e.preventDefault();
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -26,15 +36,15 @@ function SignUp() {
 
       const data = await res.json();
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       }
-      setLoading(false);
+     
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -58,7 +68,6 @@ function SignUp() {
         {/*right */}
         <div className="flex-1">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          
             <div>
               <Label value="Your Email"></Label>
               <TextInput
