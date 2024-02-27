@@ -46,7 +46,7 @@ const updateUser = async (req, res, next) => {
       },
       { new: true }
     );
-    console.log(updatedUser);
+
     const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
   } catch (error) {
@@ -60,7 +60,7 @@ const deleteUser = async (req, res, next) => {
   }
   try {
     await User.findByIdAndDelete(req.params.userid);
-    res.status(200).json('User has been Deleted');
+    res.status(200).json("User has been Deleted");
   } catch (error) {
     next(error);
   }
