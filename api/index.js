@@ -2,10 +2,11 @@ const express=require("express");
 const dotenv=require('dotenv');
 const mongoose=require("mongoose");
 const authRoutes=require("./routes/authRoutes")
+const userRoutes=require("./routes/userRoute")
 const morgan=require("morgan")
 //dotenv configuration
 dotenv.config();
-
+const cookieParser=require('cookie-parser');
 
 //database connection
 mongoose.connect(process.env.MONGO_URL).then(()=>{
@@ -17,15 +18,19 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 
 //server listening on port.
 const app=express();
-app.listen(3000,()=>{
-  console.log("server started on port 3000");
-})
+
 
 //routes 
 app.use(morgan("dev"));
 app.use(express.json())
+app.use(cookieParser());
+app.use("/api/user", userRoutes);
 app.use('/api/auth',authRoutes)
 
+
+app.listen(3000, () => {
+  console.log("server started on port 3000");
+});
 //errror middleware
 app.use((error,req,res,next)=>{
   const statuscode=error.statuscode||500;

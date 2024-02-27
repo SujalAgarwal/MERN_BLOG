@@ -49,7 +49,7 @@ const signin=async(req,res,next)=>{
     },process.env.JWT_SECRET)
 
     const {password:pass,...rest}=validuser._doc;
-    res.status(200).cookie('access token',token,{
+    res.status(200).cookie('access_token',token,{
       httpOnly:true}).json(rest)
     
    } catch (error) {
@@ -87,7 +87,7 @@ const google=async(req,res,next)=>{
          const { password: pass, ...rest } = newUser._doc;
          res
            .status(200)
-           .cookie("access token", token, {
+           .cookie("access_token", token, {
              httpOnly: true,
            })
            .json(rest);
