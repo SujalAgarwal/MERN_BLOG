@@ -20,10 +20,11 @@ import {
   updateFailure,
   deleteUserFailure,
   deleteUserSuccess,
-  deleteUserStart
+  deleteUserStart,
+  signoutSuccess
 } from "../redux/user/userSlice";
 export default function DashProfile() {
-  const { currentUser,error } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, SetImageFileUploadProgress] = useState(null);
@@ -120,24 +121,39 @@ export default function DashProfile() {
     setshowModal(false);
     try {
       dispatch(deleteUserStart());
-       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
-        
       });
-      const data=await res.json();
-      if(!res.ok)
-      {
+      const data = await res.json();
+      if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
-      }
-      else
-      {
+      } else {
         dispatch(deleteUserSuccess(data));
       }
-    
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   };
+  const handleSignout=async()=>{
+    try {
+      const res=await fetch('/api/user/signout',{
+        method:'POST',
+
+      })
+      const data=await res.json();
+      if(!res.ok)
+      {
+        console.log(data.message)
+      }
+      else
+      {
+        dispatch(signoutSuccess())
+      }
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -218,7 +234,7 @@ export default function DashProfile() {
         >
           Delete Account
         </span>
-        <span className="cursor-pointer">Sign Out</span>
+        <span onClick={handleSignout}className="cursor-pointer">Sign Out</span>
       </div>
       {updateUserSuccess && (
         <Alert color="success" className="mt-5">
