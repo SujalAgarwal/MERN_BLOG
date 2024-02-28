@@ -1,5 +1,5 @@
 const errorhandler = require("../utils/error");
-
+const Post =require("../models/postModel")
 const create = async (req, res, next) => {
   if (!req.user.isAdmin) {
     next(errorhandler(403, "You are not Allowed to create a post."));
@@ -20,7 +20,7 @@ const create = async (req, res, next) => {
   });
   try {
     const savedPost = await newPost.save();
-    res.status(201).json("Post Craeted Successfully.");
+    res.status(201).json(newPost);
   } catch (error) {
     next(error);
   }

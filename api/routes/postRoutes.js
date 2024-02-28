@@ -4,3 +4,4 @@ const { verifytoken } = require("../utils/verifyUser");
 const create = require("../controllers/postController");
 router.post('/create',verifytoken,create);
 
+module.exports=router;
