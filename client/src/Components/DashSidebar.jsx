@@ -6,7 +6,7 @@ import { useDispatch,useSelector } from "react-redux";
  import { signoutSuccess } from "../redux/user/userSlice";
 export default function DashSidebar() {
   const {currentUser}=useSelector((state)=>state.user);
-  console.log(currentUser);
+  
   const dispatch=useDispatch();
    const location = useLocation();
    const [tab, setTab] = useState("");
